@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Trash from "../icons/Trash";
 import { autoGrow, bodyParser, setNewOffset, setZIndex } from "../utils";
 import { db } from "../appwrite/database";
+import Spinner from "../icons/spinner";
 
 const NoteCard = ({ note }) => {
   const [position, setPosition] = useState(bodyParser(note.position));
@@ -89,6 +90,12 @@ const NoteCard = ({ note }) => {
         onMouseDown={mouseDown}
       >
         <Trash />
+        {saving && (
+          <div className="card-saving">
+            <Spinner color={colors.colorText} />
+            <span style={{ color: colors.colorText }}>Saving...</span>
+          </div>
+        )}
       </div>
       <div className="card-body">
         <textarea
