@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { autoGrow, bodyParser, setNewOffset, setZIndex } from "../utils";
 import { db } from "../appwrite/database";
 import DeleteButton from "./DeleteButton";
 import Spinner from "../icons/Spinner";
+import { NoteContext } from "../context/NoteContext";
 
 const NoteCard = ({ note }) => {
   const [position, setPosition] = useState(bodyParser(note.position));
@@ -16,6 +17,8 @@ const NoteCard = ({ note }) => {
   const cardRef = useRef(null);
   const textAreaRef = useRef(null);
   const keyUpTimer = useRef(null);
+
+  const { setSelectedNote } = useContext(NoteContext);
 
   const handleKeyUp = async () => {
     setSaving(true);
@@ -31,12 +34,13 @@ const NoteCard = ({ note }) => {
 
   const mouseDown = (e) => {
     if (e.target.className === "card-header") {
-      setZIndex(cardRef.current);
       mouseStartPos.x = e.clientX;
       mouseStartPos.y = e.clientY;
 
       document.addEventListener("mousemove", mouseMove);
       document.addEventListener("mouseup", mouseUp);
+      setZIndex(cardRef.current);
+      setSelectedNote(note);
     }
   };
 
@@ -106,7 +110,10 @@ const NoteCard = ({ note }) => {
           defaultValue={body}
           style={{ color: colors.colorText }}
           onInput={() => autoGrow(textAreaRef)}
-          onFocus={() => setZIndex(cardRef.current)}
+          onFocus={() => {
+            setZIndex(cardRef.current);
+            setSelectedNote(note);
+          }}
           onKeyUp={handleKeyUp}
         ></textarea>
       </div>
