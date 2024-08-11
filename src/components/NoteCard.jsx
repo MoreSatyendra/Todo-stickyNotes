@@ -5,6 +5,7 @@ import { db } from "../appwrite/database";
 
 const NoteCard = ({ note }) => {
   const [position, setPosition] = useState(bodyParser(note.position));
+  const [saving, setSaving] = useState(false);
 
   const colors = bodyParser(note.colors);
   const body = bodyParser(note.body);
@@ -13,6 +14,19 @@ const NoteCard = ({ note }) => {
 
   const cardRef = useRef(null);
   const textAreaRef = useRef(null);
+  const keyUpTimer = useRef(null);
+
+  const handleKeyUp = async () => {
+    setSaving(true);
+
+    if (keyUpTimer.current) {
+      clearTimeout(keyUpTimer.current);
+    }
+
+    keyUpTimer.current = setTimeout(() => {
+      saveData("body", textAreaRef.current.value);
+    }, 2000);
+  };
 
   const mouseDown = (e) => {
     setZIndex(cardRef.current);
@@ -50,6 +64,7 @@ const NoteCard = ({ note }) => {
     } catch (error) {
       console.error(error);
     }
+    setSaving(false);
   };
 
   useEffect(() => {
@@ -82,6 +97,7 @@ const NoteCard = ({ note }) => {
           style={{ color: colors.colorText }}
           onInput={() => autoGrow(textAreaRef)}
           onFocus={() => setZIndex(cardRef.current)}
+          onKeyUp={handleKeyUp}
         ></textarea>
       </div>
     </div>
