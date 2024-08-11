@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import Trash from "../icons/Trash";
 import { autoGrow, bodyParser, setNewOffset, setZIndex } from "../utils";
 import { db } from "../appwrite/database";
-import Spinner from "../icons/spinner";
 import DeleteButton from "./DeleteButton";
+import Spinner from "../icons/Spinner";
 
-const NoteCard = ({ note, setNotes }) => {
+const NoteCard = ({ note }) => {
   const [position, setPosition] = useState(bodyParser(note.position));
   const [saving, setSaving] = useState(false);
 
@@ -73,6 +72,7 @@ const NoteCard = ({ note, setNotes }) => {
 
   useEffect(() => {
     autoGrow(textAreaRef);
+    setZIndex(cardRef.current);
   }, []);
 
   return (
@@ -92,13 +92,13 @@ const NoteCard = ({ note, setNotes }) => {
         }}
         onMouseDown={mouseDown}
       >
-        <DeleteButton noteId={note.$id} setNotes={setNotes} />
         {saving && (
           <div className="card-saving">
             <Spinner color={colors.colorText} />
             <span style={{ color: colors.colorText }}>Saving...</span>
           </div>
         )}
+        <DeleteButton noteId={note.$id} />
       </div>
       <div className="card-body">
         <textarea
