@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Trash from "../icons/Trash";
-import { autoGrow, setNewOffset, setZIndex } from "../utils";
+import { autoGrow, bodyParser, setNewOffset, setZIndex } from "../utils";
 
 const NoteCard = ({ note }) => {
-  const [position, setPosition] = useState(JSON.parse(note.position));
-  const colors = JSON.parse(note.colors);
-  const body = JSON.parse(note.body);
+  const [position, setPosition] = useState(bodyParser(note.position));
+  const colors = bodyParser(note.colors);
+  const body = bodyParser(note.body);
 
   let mouseStartPos = { x: 0, y: 0 };
 
